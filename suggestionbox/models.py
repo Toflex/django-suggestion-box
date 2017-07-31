@@ -11,7 +11,16 @@ class Suggestion(models.Model):
     def __unicode__(self):
         return '%s - %s' % (self.created, self.class_name)
 
+    def get_unread(self, ip_address):
+        result = type(self).objects.filter(ip_address=ip_address, read=False)
+        if result:
+            return result.get()
+        else:
+            return type(self)(ip_address=ip_address)
+
     def validate_unique(self, exclude=None):
+        if self.deleted and not self.read:
+            raise ValidationError(('Invalid finite state'), code='invalid')
         unique = super(Suggestion, self).validate_unique(exclude=exclude)
         if self.read is True:
             return unique

@@ -3,8 +3,9 @@ Gives websites simple one-way communication from visitors without message floodi
 
 
 ##Version
-#### 0.1
+#### 0.2
 * Basic Model
+* Draft Form/View
 
 
 ##Purpose
