@@ -3,8 +3,9 @@ Gives websites simple one-way communication from visitors without message floodi
 
 
 ##Version
-#### 1.0
+#### 1.1
 * Lightweight
+* Reader View
 
 
 ##Purpose
@@ -15,4 +16,4 @@ the host with messages.
 
 
 ##Todo
-* Admin unread message view
+* Tests

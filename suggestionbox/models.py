@@ -1,7 +1,15 @@
+from django.contrib.contenttypes.models import ContentType
+from django.core import urlresolvers
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
 class Box(models.Manager):
+
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.model)
+        return urlresolvers.reverse("admin:%s_%s_changelist" % (
+            content_type.app_label, content_type.model))
 
     def get_unread(self, ip_address):
         result = Suggestion.objects.filter(ip_address=ip_address, read=False)
@@ -22,12 +30,17 @@ class Suggestion(models.Model):
     def __unicode__(self):
         return '%s - %s' % (self.created, self.ip_address)
 
-    def validate_unique(self, exclude=None):
-        if self.deleted and not self.read:
-            raise ValidationError(('Invalid finite state'), code='invalid')
-        unique = super(Suggestion, self).validate_unique(exclude=exclude)
+    def clean(self):
+        clean = super(Suggestion, self).clean()
+        if self.deleted:
+            self.read = True
         if self.read is True:
-            return unique
+            return clean
         if type(self).objects.exclude(id=self.id).filter(
                 read=False, ip_address=self.ip_address).exists():
             raise ValidationError(('Duplicate IP Error'), code='invalid')
+
+    def get_admin_url(self):
+        content_type = ContentType.objects.get_for_model(self.__class__)
+        return urlresolvers.reverse("admin:%s_%s_change" % (
+            content_type.app_label, content_type.model), args=(self.id,))
