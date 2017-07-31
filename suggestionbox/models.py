@@ -1,22 +1,26 @@
 from django.db import models
 
 
+class Box(models.Manager):
+
+    def get_unread(self, ip_address):
+        result = Suggestion.objects.filter(ip_address=ip_address, read=False)
+        if result:
+            return result.get()
+        else:
+            return Suggestion(ip_address=ip_address)
+
+
 class Suggestion(models.Model):
     message = models.TextField(null=False, blank=True, default='')
     ip_address = models.GenericIPAddressField(null=False, blank=False)
     read = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+    objects = Box()
 
     def __unicode__(self):
-        return '%s - %s' % (self.created, self.class_name)
-
-    def get_unread(self, ip_address):
-        result = type(self).objects.filter(ip_address=ip_address, read=False)
-        if result:
-            return result.get()
-        else:
-            return type(self)(ip_address=ip_address)
+        return '%s - %s' % (self.created, self.ip_address)
 
     def validate_unique(self, exclude=None):
         if self.deleted and not self.read:

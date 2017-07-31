@@ -13,15 +13,12 @@ def get_client_ip(request):
     return ip
 
 
-class CreateSuggestionView(UpdateView):
+class EditSuggestionView(UpdateView):
     form_class = SuggestionBoxSubmitForm
+    model = Suggestion
+#    success_url = '/feedback'
+#    template_name = "feedback.html"
 
-    def get_initial(self):
+    def get_object(self):
         self.ip_address = get_client_ip(self.request)
-        return Suggestion.get_unread(ip_address)
-
-    def form_valid(self, form):
-        user = form.save()
-        user = utils.authenticate_without_password(user)
-        auth.login(self.request, user)
-        return super(CreateUserView, self).form_valid(form)
+        return Suggestion.objects.get_unread(self.ip_address)
