@@ -15,7 +15,7 @@ class SuggestionRaw(Suggestion):
 
 
 class SuggestionInbox(admin.ModelAdmin):
-    list_display = ('created', 'ip_address')
+    list_display = ('created', 'ip_address', 'message_start')
     readonly_fields=('created', 'ip_address', 'message')
 
     def get_queryset(self, request):

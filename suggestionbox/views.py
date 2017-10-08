@@ -5,7 +5,7 @@ from suggestionbox.models import Suggestion
 
 
 def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR', None)
     if x_forwarded_for:
         ip = x_forwarded_for.split(',')[-1]
     else:
@@ -17,7 +17,7 @@ class EditSuggestionView(UpdateView):
     form_class = SuggestionBoxSubmitForm
     model = Suggestion
 #    success_url = '/feedback'
-#    template_name = "feedback.html"
+#    template_name = 'feedback.html'
 
     def get_object(self):
         self.ip_address = get_client_ip(self.request)
