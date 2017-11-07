@@ -30,6 +30,10 @@ class Suggestion(models.Model):
     def __unicode__(self):
         return '%s - %s' % (self.created, self.ip_address)
 
+    @property
+    def message_start(self):
+        return self.message[:80]
+
     def clean(self):
         clean = super(Suggestion, self).clean()
         if self.blocked:
