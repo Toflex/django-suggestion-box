@@ -3,9 +3,10 @@ Gives websites simple one-way communication from visitors without message floodi
 
 
 ##Version
-#### 1.1
+#### 1.2
 * Lightweight
 * Reader View
+* IP-Blocking
 
 
 ##Purpose

@@ -13,7 +13,7 @@ class Box(models.Manager):
 
     def get_unread(self, ip_address):
         result = Suggestion.objects.filter(ip_address=ip_address, read=False)
-        if result:
+        if result.exists():
             return result.get()
         else:
             return Suggestion(ip_address=ip_address)
@@ -23,7 +23,7 @@ class Suggestion(models.Model):
     message = models.TextField(null=False, blank=True, default='')
     ip_address = models.GenericIPAddressField(null=False, blank=False)
     read = models.BooleanField(default=False)
-    deleted = models.BooleanField(default=False)
+    blocked = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
     objects = Box()
 
@@ -32,8 +32,8 @@ class Suggestion(models.Model):
 
     def clean(self):
         clean = super(Suggestion, self).clean()
-        if self.deleted:
-            self.read = True
+        if self.blocked:
+            self.read = False
         if self.read is True:
             return clean
         if type(self).objects.exclude(id=self.id).filter(

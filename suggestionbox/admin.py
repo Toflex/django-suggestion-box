@@ -5,7 +5,7 @@ from suggestionbox.models import Suggestion
 
 
 class SuggestionAdmin(admin.ModelAdmin):
-    list_display = ('created', 'ip_address', 'read', 'deleted')
+    list_display = ('created', 'ip_address', 'read', 'blocked')
     readonly_fields=('created',)
 
 
@@ -19,7 +19,7 @@ class SuggestionInbox(admin.ModelAdmin):
     readonly_fields=('created', 'ip_address', 'message')
 
     def get_queryset(self, request):
-        return Suggestion.objects.filter(read=False)
+        return Suggestion.objects.filter(read=False, blocked=False)
 
     def response_change(self, request, obj):
         inbox = self.get_queryset(request)
